@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Andromix</string>
+    <string name="arl">ARL</string>
+    <string name="server">Server</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+</resources>
