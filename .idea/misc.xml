@@ -9,6 +9,8 @@
         <entry key="app/src/main/res/layout/download_menu.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_collection_object.xml" value="0.28125" />
         <entry key="app/src/main/res/layout/fragment_item.xml" value="0.19479166666666667" />
+        <entry key="app/src/main/res/layout/fragment_page.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/item_fragment.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/main_menu.xml" value="0.29483695652173914" />
         <entry key="app/src/main/res/layout/popup_confirm_download.xml" value="0.19479166666666667" />
         <entry key="app/src/main/res/layout/popup_download_confirm.xml" value="0.19427083333333334" />
