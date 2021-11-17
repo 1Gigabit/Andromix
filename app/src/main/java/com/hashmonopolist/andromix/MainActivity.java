@@ -1,6 +1,9 @@
 package com.hashmonopolist.andromix;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,11 +22,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.hashmonopolist.andromix.fragments.ItemFragment;
 
 public class MainActivity extends AppCompatActivity {
     String cookie;
@@ -49,12 +55,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        MenuItem appBarSearch = findViewById(R.id.app_bar_search);
-        MenuItem appBarSettings = findViewById(R.id.app_bar_settings);
-
         TabLayout tabLayout = findViewById(R.id.tablayout);
 
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
+        transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
+        transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
+        transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
+        tra
 
+        //Tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -70,6 +80,20 @@ public class MainActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm download")
+                .setMessage("Are you sure you want to download?\n\n" +
+                        "Album: "+"\n" +
+                        "By: "+"\n")
+                .setPositiveButton("Okay", (dialog, which) -> {
+
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+
+                })
+                .create()
+                .show();
     }
         @SuppressLint("NonConstantResourceId")
         @Override

@@ -3,14 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19427083333333334" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_settings.xml" value="0.29483695652173914" />
         <entry key="app/src/main/res/layout/collection_demo.xml" value="0.28125" />
+        <entry key="app/src/main/res/layout/download_menu.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_collection_object.xml" value="0.28125" />
+        <entry key="app/src/main/res/layout/fragment_item.xml" value="0.19479166666666667" />
         <entry key="app/src/main/res/layout/main_menu.xml" value="0.29483695652173914" />
+        <entry key="app/src/main/res/layout/popup_confirm_download.xml" value="0.19479166666666667" />
+        <entry key="app/src/main/res/layout/popup_download_confirm.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/tab_layout.xml" value="0.28125" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/menu/menu_main.xml" value="0.19427083333333334" />
+        <entry key="app/src/main/res/menu/popup_download.xml" value="0.19427083333333334" />
       </map>
     </option>
   </component>
