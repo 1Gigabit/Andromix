@@ -32,7 +32,6 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.hashmonopolist.andromix.fragments.ItemFragment;
 
 public class MainActivity extends AppCompatActivity {
-    String cookie;
     API api;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,11 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Log in
         this.api.loginARL(BuildConfig.DEEMIX_ARL, v -> {
-            this.cookie = v.headers.get("Set-Cookie");
-            ContextCompat.getMainExecutor(this).execute(() -> {
-                Toast.makeText(this, "Logged in!", Toast.LENGTH_SHORT).show();
-            });
-            System.out.println(cookie);
         });
 
 
@@ -62,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
         transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
         transaction.add(R.id.fragment_container_view,new Fragment(R.layout.fragment_item));
-        tra
 
         //Tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
