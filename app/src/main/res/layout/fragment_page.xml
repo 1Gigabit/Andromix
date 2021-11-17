@@ -3,12 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="204dp"
-        android:layout_height="154dp"
-        android:text="fsdfsafsdfsdfmlkfnsalkjfsnadkfjsanfdsikjanafsdljkfdsnjkdfnasjkadsfnjkasfd"
-        tools:layout_editor_absoluteX="65dp"
-        tools:layout_editor_absoluteY="221dp" />
+    <TableLayout
+        android:id="@+id/tablelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TableRow>
+        </TableRow>
+        <TableRow>
+        </TableRow>
+        <TableRow>
+        </TableRow>
+    </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

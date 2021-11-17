@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,19 +14,27 @@ import androidx.fragment.app.Fragment;
 
 import com.hashmonopolist.andromix.R;
 
+import java.util.List;
+
 public class FragmentPage extends Fragment {
-    String text;
+    List<TableRow> tableRows;
     public FragmentPage(String text) {
         super(R.layout.fragment_page);
-        this.text = text;
+//        this.text = text;
+    }
+    public FragmentPage(List<TableRow> tableRows) {
+        super(R.layout.fragment_page);
+        this.tableRows = tableRows;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_page, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.textView);
-        textView.setText(text);
+        TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.tablayout);
+        for(TableRow tableRow: tableRows) {
+            tableLayout.addView(tableRow);
+        }
         return rootView;
     }
 }
