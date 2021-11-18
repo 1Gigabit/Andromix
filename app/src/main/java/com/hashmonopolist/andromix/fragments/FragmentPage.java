@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.hashmonopolist.andromix.R;
+import com.hashmonopolist.andromix.gson.SearchResults;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class FragmentPage extends Fragment {
 //        this.text = text;
     }
 
-    public FragmentPage(List<TableRow> tableRows) {
+    public FragmentPage(List<SearchResults.Albums.Album> data) {
         super(R.layout.fragment_page);
         this.tableRows = tableRows;
     }
@@ -32,10 +33,10 @@ public class FragmentPage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_page, container, false);
-//        TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.tablayout);
-//        for(TableRow tableRow: tableRows) {
-//            tableLayout.addView(tableRow);
-//        }
+        TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.tablayout);
+        for(TableRow tableRow: tableRows) {
+            tableLayout.addView(tableRow);
+        }
         return rootView;
     }
 }

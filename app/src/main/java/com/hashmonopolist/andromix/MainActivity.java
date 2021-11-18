@@ -1,34 +1,30 @@
 package com.hashmonopolist.andromix;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.PathDashPathEffect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.SearchView;
-import android.widget.TableRow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
-import androidx.loader.app.LoaderManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.hashmonopolist.andromix.fragments.FragmentItem;
 import com.hashmonopolist.andromix.fragments.FragmentPage;
 import com.hashmonopolist.andromix.gson.SearchResults;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -81,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                System.out.println(searchView.getQuery().toString());
+                search(query);
                 return false;
             }
 
@@ -102,15 +98,16 @@ public class MainActivity extends AppCompatActivity {
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            if (position == 0) {
-                return new FragmentPage("Testing 1");
+            switch (position){
+                case 1:
 
-            }
-            else if (position == 1) {
-                return new FragmentPage("Testing 2");
-            }
-            else {
-                return new FragmentPage("Testing 3");
+                    return new FragmentPage("Testing 1");
+                case 2:
+                    return new FragmentPage("Testing 2");
+                case 3:
+                    return new FragmentPage("Testing 3");
+                default:
+                    return new FragmentPage("a");
             }
         }
 
@@ -119,7 +116,15 @@ public class MainActivity extends AppCompatActivity {
             return 3;
         }
     }
-
+    public void search(String search) {
+        api.mainSearch(search, (searchResults) -> {
+            List<SearchResults.Albums.Album> data = searchResults.getALBUM().getData();
+            for(SearchResults.Albums.Album album: data) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(new Fragment
+            }
+        });
+    }
 }
 
 

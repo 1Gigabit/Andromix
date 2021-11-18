@@ -12,6 +12,9 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.hashmonopolist.andromix.gson.SearchResults;
 
 import java.io.File;
 import java.util.HashMap;
@@ -41,6 +44,9 @@ public class API {
     public interface AddToQueueResponse {
         void onSuccess(NetworkResponse networkResponse);
     }
+    public interface SearchResponse {
+        void onSuccess(SearchResults searchResults);
+    }
     public void loginARL(String arl, LoginARLResponse loginARLResponse) {
         String url = server + "/api/login-arl?arl=" + arl;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> System.out.println(response), System.out::println) {
@@ -63,6 +69,14 @@ public class API {
                 return super.getHeaders();
             }
         };
+    }
+    public void mainSearch(String term, SearchResponse searchResponse) {
+        String url = this.server + "/api/mainSearch?term="+term;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
+            Gson gson = new GsonBuilder().create();
+            searchResponse.onSuccess(gson.fromJson(response,SearchResults.class));
+        }, System.out::println);
+        requestQueue.add(stringRequest);
     }
 }
 /*

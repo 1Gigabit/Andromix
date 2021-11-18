@@ -3,11 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <TableLayout
-        android:id="@+id/tablelayout"
+
+    <ListView
+        android:id="@+id/listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container_view_table_layout"/>
-    </TableLayout>
+        android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
