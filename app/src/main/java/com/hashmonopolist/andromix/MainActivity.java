@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
@@ -21,7 +24,12 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.hashmonopolist.andromix.fragments.FragmentItem;
 import com.hashmonopolist.andromix.fragments.FragmentPage;
+import com.hashmonopolist.andromix.gson.SearchResults;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     API api;
@@ -33,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
 
         this.api = new API(BuildConfig.DEEMIX_SERVER, getCacheDir());
-        TabLayout tabLayout = findViewById(R.id.tablayout);
 
         Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show();
 
@@ -41,7 +48,10 @@ public class MainActivity extends AppCompatActivity {
         this.api.loginARL(BuildConfig.DEEMIX_ARL, v -> {
         });
 
-        ViewPager2 viewPager = (ViewPager2) findViewById(R.id.viewpager);
+        // Side swiping
+        ViewPager2 viewPager = findViewById(R.id.viewpager);
+        TabLayout tabLayout = findViewById(R.id.tablayout);
+
         PageFragmentStateAdapter adapter = new PageFragmentStateAdapter(getSupportFragmentManager(),getLifecycle());
         viewPager.setAdapter(adapter);
 
@@ -49,24 +59,11 @@ public class MainActivity extends AppCompatActivity {
             String[] titles = new String[]{"Track","Album","Artist"};
             tabLayout.selectTab(tab.setText(titles[position]));
         }).attach();
-
-        new AlertDialog.Builder(this)
-                .setTitle("Confirm download")
-                .setMessage("Are you sure you want to download?\n\n" +
-                        "Album: "+"\n" +
-                        "By: "+"\n")
-                .setPositiveButton("Okay", (dialog, which) -> {
-
-                })
-                .setNegativeButton("Cancel", (dialog, which) -> {
-
-                })
-                .create()
-                .show();
     }
-        @SuppressLint("NonConstantResourceId")
+
+    @SuppressLint("NonConstantResourceId")
         @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
             if (item.getItemId() == R.id.app_bar_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
@@ -78,6 +75,21 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+        // Search
+        MenuItem searchViewItem = menu.findItem(R.id.app_bar_search);
+        SearchView searchView = (SearchView) searchViewItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                System.out.println(searchView.getQuery().toString());
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
@@ -107,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             return 3;
         }
     }
+
 }
 
 

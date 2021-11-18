@@ -22,6 +22,7 @@ public class FragmentPage extends Fragment {
         super(R.layout.fragment_page);
 //        this.text = text;
     }
+
     public FragmentPage(List<TableRow> tableRows) {
         super(R.layout.fragment_page);
         this.tableRows = tableRows;
@@ -31,10 +32,10 @@ public class FragmentPage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_page, container, false);
-        TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.tablayout);
-        for(TableRow tableRow: tableRows) {
-            tableLayout.addView(tableRow);
-        }
+//        TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.tablayout);
+//        for(TableRow tableRow: tableRows) {
+//            tableLayout.addView(tableRow);
+//        }
         return rootView;
     }
 }
