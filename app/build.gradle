@@ -5,11 +5,11 @@ def envVarsPropertiesFile = rootProject.file("env.properties")
 def envVarsProperties = new Properties()
 envVarsProperties.load(new FileInputStream(envVarsPropertiesFile))
 android {
-    compileSdk 31
+    compileSdk 28
 
     defaultConfig {
         applicationId "com.hashmonopolist.andromix"
-        minSdk 29
+        minSdk 28
         targetSdk 31
         versionCode 1
         versionName "1.0"
@@ -28,6 +28,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    compileSdkVersion 28
 }
 
 dependencies {
