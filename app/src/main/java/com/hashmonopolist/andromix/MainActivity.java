@@ -1,34 +1,36 @@
 package com.hashmonopolist.andromix;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PathDashPathEffect;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.Lifecycle;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-import com.hashmonopolist.andromix.fragments.FragmentPage;
 import com.hashmonopolist.andromix.gson.SearchResults;
-
-import java.util.List;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
     API api;
+    SearchResults searchResults;
+    LinearLayout albumLayout;
+    LinearLayout artistLayout;
+    LinearLayout trackLayout;
+    private TabLayout tabLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,30 +44,57 @@ public class MainActivity extends AppCompatActivity {
 
         //Log in
         this.api.loginARL(BuildConfig.DEEMIX_ARL, v -> {
+            runOnUiThread(() -> Toast.makeText(MainActivity.this, "Logged in!", Toast.LENGTH_SHORT).show());
         });
 
-        // Side swiping
-        ViewPager2 viewPager = findViewById(R.id.viewpager);
-        TabLayout tabLayout = findViewById(R.id.tablayout);
+        //Tabs
+        /*
+        Side swiping not supported with ViewPager so not implementing it.
+         */
+        this.tabLayout = findViewById(R.id.tablayout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                tabLayout.selectTab(tab);
+                LinearLayout pageLayout = findViewById(R.id.linearlayout_page);
+                pageLayout.removeAllViewsInLayout();
+                switch(tab.getText().toString()) {
+                    case "Album":
+                        if(albumLayout == null) break;
+                        pageLayout.addView(albumLayout);
+                        break;
+                    case "Artist":
+                        if(artistLayout == null) break;
+                        pageLayout.addView(artistLayout);
+                        break;
+                    case "Track":
+                        if(trackLayout == null) break;
+                        pageLayout.addView(trackLayout);
 
-        PageFragmentStateAdapter adapter = new PageFragmentStateAdapter(getSupportFragmentManager(),getLifecycle());
-        viewPager.setAdapter(adapter);
+                }
+            }
 
-        new TabLayoutMediator(tabLayout,viewPager, (tab,position) -> {
-            String[] titles = new String[]{"Track","Album","Artist"};
-            tabLayout.selectTab(tab.setText(titles[position]));
-        }).attach();
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
-        @Override
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-            if (item.getItemId() == R.id.app_bar_settings) {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.app_bar_settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
         }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(MainActivity.this,"Searching...",Toast.LENGTH_SHORT).show();
                 search(query);
+
                 return false;
             }
 
@@ -89,40 +120,62 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    public class PageFragmentStateAdapter extends FragmentStateAdapter {
-
-        public PageFragmentStateAdapter(FragmentManager fragment, Lifecycle lifecycle) {
-            super(fragment,lifecycle);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position){
-                case 1:
-
-                    return new FragmentPage("Testing 1");
-                case 2:
-                    return new FragmentPage("Testing 2");
-                case 3:
-                    return new FragmentPage("Testing 3");
-                default:
-                    return new FragmentPage("a");
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return 3;
-        }
-    }
     public void search(String search) {
         api.mainSearch(search, (searchResults) -> {
-            List<SearchResults.Albums.Album> data = searchResults.getALBUM().getData();
-            for(SearchResults.Albums.Album album: data) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(new Fragment
+            this.searchResults = searchResults;
+            LayoutInflater layoutInflater = getLayoutInflater();
+            albumLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_page,null);
+            artistLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_page,null);
+            trackLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_page,null);
+            AlertDialog.Builder confirmDownloadDialog = new AlertDialog.Builder(this)
+                    .setTitle("Are you sure")
+                    .setPositiveButton("Yes", (dialog, which) -> Toast.makeText(MainActivity.this,"Downloading...",Toast.LENGTH_SHORT).show())
+                    .setNegativeButton("No", (dialog, which) -> {});
+            for (SearchResults.Albums.Album data : searchResults.getALBUM().getData()) {
+                LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
+                item.setOnClickListener(l -> {
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getALB_TITLE()).create().show();
+                });
+                ((TextView) item.findViewById(R.id.textview_title)).setText(data.getALB_TITLE());
+                ((TextView) item.findViewById(R.id.textview_artist)).setText(data.getALB_TITLE());
+                Picasso.get().load(data.getALB_PICTURE()).into((ImageView) item.findViewById(R.id.imageview_cover));
+                albumLayout.addView(item);
             }
+            for (SearchResults.Artists.Artist data : searchResults.getARTIST().getData()) {
+                LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
+                item.setOnClickListener(l -> {
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME()).create().show();
+                });
+                ((TextView) item.findViewById(R.id.textview_title)).setText(data.getART_NAME());
+                ((TextView) item.findViewById(R.id.textview_by)).setVisibility(View.GONE);
+                ((TextView) item.findViewById(R.id.textview_artist)).setVisibility(View.GONE);
+                Picasso.get().load(data.getART_PICTURE()).into((ImageView) item.findViewById(R.id.imageview_cover));
+                artistLayout.addView(item);
+            }
+            for (SearchResults.Tracks.Track data : searchResults.getTRACK().getData()) {
+                LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
+                item.setOnClickListener(l -> {
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getSNG_TITLE()).create().show();
+                });
+                ((TextView) item.findViewById(R.id.textview_title)).setText(data.getSNG_TITLE());
+                ((TextView) item.findViewById(R.id.textview_artist)).setText(data.getART_NAME());
+                Picasso.get().load(data.getALB_PICTURE()).into((ImageView) item.findViewById(R.id.imageview_cover));
+                trackLayout.addView(item);
+            }
+            TabLayout.Tab tab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
+            if(tabLayout.getSelectedTabPosition() == 0) {
+                tabLayout.selectTab(tabLayout.getTabAt(1));
+                tabLayout.selectTab(tab);
+            }
+            if(tabLayout.getSelectedTabPosition() == 1) {
+                tabLayout.selectTab(tabLayout.getTabAt(2));
+                tabLayout.selectTab(tab);
+            }
+            if(tabLayout.getSelectedTabPosition() == 2) {
+                tabLayout.selectTab(tabLayout.getTabAt(1));
+                tabLayout.selectTab(tab);
+            }
+            Toast.makeText(MainActivity.this,"Search completed",Toast.LENGTH_SHORT).show();
         });
     }
 }

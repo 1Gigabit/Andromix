@@ -38,7 +38,7 @@ public class SearchResults {
             }
 
             public String getALB_PICTURE() {
-                return ALB_PICTURE;
+                return "https://e-cdns-images.dzcdn.net/images/cover/"+ALB_PICTURE+"/156x156-000000-80-0-0.jpg";
             }
         }
         public List<Track> getData() {
@@ -67,7 +67,7 @@ public class SearchResults {
             }
 
             public String getALB_PICTURE() {
-                return ALB_PICTURE;
+                return "https://e-cdns-images.dzcdn.net/images/cover/"+ALB_PICTURE+"/156x156-000000-80-0-0.jpg";
             }
 
             public String getART_NAME() {
@@ -99,7 +99,7 @@ public class SearchResults {
             }
 
             public String getART_PICTURE() {
-                return ART_PICTURE;
+                return "https://e-cdns-images.dzcdn.net/images/artist/"+ART_PICTURE+"/156x156-000000-80-0-0.jpg";
             }
         }
 

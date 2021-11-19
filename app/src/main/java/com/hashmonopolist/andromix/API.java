@@ -49,10 +49,11 @@ public class API {
     }
     public void loginARL(String arl, LoginARLResponse loginARLResponse) {
         String url = server + "/api/login-arl?arl=" + arl;
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> System.out.println(response), System.out::println) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, System.out::println, System.out::println) {
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 cookie = response.headers.get("Set-Cookie");
+                loginARLResponse.onSuccess(response);
                 return super.parseNetworkResponse(response);
             }
         };
@@ -60,7 +61,9 @@ public class API {
     }
 
     public void addToQueue(String id, AddToQueueResponse addToQueueResponse) {
-        String url = this.server+"/api/addToQueue";
+//https://musicdl.stellarnet.xyz:8443/api/addToQueue?url=https%3A%2F%2Fwww.deezer.com%2Ftrack%2F1109731&bitrate=null
+//https://www.deezer.com/track/1109731&bitrate=null
+        String url = this.server+"/api/addToQueue?url=https://www.deezer.com/track/"+id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> System.out.println(response), System.out::println) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
