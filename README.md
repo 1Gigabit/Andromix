@@ -1,30 +1,33 @@
 
 # Andromix
+
 A deemix client for Android devices.
 
 ## Setting up for development
 
-Just git clone this repository.
-You will need to also add environment variables.
+Just import this repository. I used Android Studio to code this project.
 
-Inside ``env.properties.example`` you will find the variables you need to set.
-Just rename ``env.properties.example`` to ``env.properties`` and make sure the keys and values are set accordingly.
+## Building your self
 
-Environment variables get over written by app's file storage settings
+I don't know. I just use Android Studio to build it for me, lol.
 
-## To-do
+## FAQ
 
+### How to get ARL to phone?
 
-Core functionality:
-- [ ] Download Albums
-- [ ] Download Artists
-- [ ] Download Tracks
-- [ ] Search Albums
-- [ ] Search Artists
-- [ ] Search Track
+I personally just used StandardNotes to sync text between my phone and my computer.
+You may also be able to use KDE connect to send a file containing the ARL in which you can then copy and paste it.
 
-User interface:
-- [ ] Tabs for Albums, Artists, and Track search results
-- [ ] Results shown inside tabs.
-- [ ] Results are in a grid-like fashion.
-- [ ] Side swiping tabs.
+### What does "NotLoggedIn" mean?
+
+Your ARL failed to authenticate with deezer. Set your ARL properly.
+
+### Will there be a way to view download queue?
+
+Unfortunately I am not experienced with websockets.
+If someone is and would like to attempt to add functionality, go for it and make a PR.
+
+### Does this download to your phone?
+
+No! It simply requests downloads to be downloaded on a Deemix server.
+I personally use AirSonic & Substream (Android) to play music from the downloads on the Deemix server.
