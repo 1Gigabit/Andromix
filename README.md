@@ -31,3 +31,15 @@ If someone is and would like to attempt to add functionality, go for it and make
 
 No! It simply requests downloads to be downloaded on a Deemix server.
 I personally use AirSonic & Substream (Android) to play music from the downloads on the Deemix server.
+
+## What other features do you plan on adding?
+
+I hope to add viewing a download queue whenever I get around to it.
+I hope to make it so you can go from Artist -> Artist's Albums -> Album's tracks.
+
+### What I don't like about this project
+
+I wanted to add side swiping but I could not figure out how to get it to work properly.
+
+I don't like the very bottom of MainActivity.java because it's just such a dirty way
+of updating tablayout.
