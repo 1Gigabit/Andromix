@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:dialogTitle="Set ARL"
+        android:key="saved_arl"
+        android:title="ARL"
+        android:summary="Set ARL for Andromix"/>
+    <EditTextPreference
+        android:dialogTitle="Set Server"
+        android:key="saved_server"
+        android:title="Server"
+        android:summary="Set server for Andromix"/>
+</PreferenceScreen>

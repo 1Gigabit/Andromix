@@ -1,5 +1,7 @@
 package com.hashmonopolist.andromix;
 
+import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.Network;
@@ -13,6 +15,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hashmonopolist.andromix.gson.AddToQueueResults;
 import com.hashmonopolist.andromix.gson.SearchResults;
 
 import java.io.File;
@@ -42,6 +45,8 @@ public class API {
     }
     public interface AddToQueueResponse {
         void onSuccess(String networkResponse);
+        void onFailure(AddToQueueResults addToQueueResults);
+
     }
     public interface SearchResponse {
         void onSuccess(SearchResults searchResults);
@@ -62,8 +67,13 @@ public class API {
     public void addToQueue(String id,String type, AddToQueueResponse addToQueueResponse) {
         String url = this.server+"/api/addToQueue?url=https://www.deezer.com/"+type+"/"+id;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
-            System.out.println(response);
-            addToQueueResponse.onSuccess(response);
+            AddToQueueResults addToQueueResults = new GsonBuilder().create().fromJson(response, AddToQueueResults.class);
+            if(!addToQueueResults.getResult()) {
+                addToQueueResponse.onFailure(addToQueueResults);
+            } else {
+                addToQueueResponse.onSuccess(response);
+            }
+
         }, System.out::println) {
             @Override
             public Map<String, String> getHeaders() {

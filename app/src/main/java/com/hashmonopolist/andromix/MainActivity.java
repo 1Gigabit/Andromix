@@ -1,7 +1,9 @@
 package com.hashmonopolist.andromix;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,17 +19,22 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.hashmonopolist.andromix.gson.AddToQueueResults;
 import com.hashmonopolist.andromix.gson.SearchResults;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
     API api;
+    String server;
+    String arl;
     SearchResults searchResults;
     LinearLayout albumLayout;
     LinearLayout artistLayout;
     LinearLayout trackLayout;
+    SharedPreferences preferences;
     private TabLayout tabLayout;
 
     @Override
@@ -35,14 +42,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        this.server = preferences.getString("saved_server","");
+        this.arl = preferences.getString("saved_arl","");
+        System.out.println("Server: "+server);
+        System.out.println("ARL: " + arl);
         getSupportActionBar().setTitle("");
 
-        this.api = new API(BuildConfig.DEEMIX_SERVER, getCacheDir());
+        this.api = new API(server, getCacheDir());
 
         Toast.makeText(this, "Logging in", Toast.LENGTH_SHORT).show();
 
         //Log in
-        this.api.loginARL(BuildConfig.DEEMIX_ARL, v -> {
+        this.api.loginARL(arl, v -> {
             runOnUiThread(() -> Toast.makeText(MainActivity.this, "Logged in!", Toast.LENGTH_SHORT).show());
         });
 
@@ -85,6 +97,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        this.server = preferences.getString("saved_server","test");
+        this.arl = preferences.getString("saved_arl","test");
+        this.api = new API(server,getCacheDir());
+        //Retry login
+        this.api.loginARL(arl, v -> {
+            runOnUiThread(() -> Toast.makeText(MainActivity.this, "Logged in!", Toast.LENGTH_SHORT).show());
+        });
+    }
+
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -105,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 Toast.makeText(MainActivity.this,"Searching...",Toast.LENGTH_SHORT).show();
                 search(query);
 
@@ -129,21 +154,31 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder confirmDownloadDialog = new AlertDialog.Builder(this)
                     .setTitle("Are you sure")
                     .setNegativeButton("No", (dialog, which) -> {});
+            AlertDialog.Builder failureDialog = new AlertDialog.Builder(this)
+                    .setTitle("Failed to send download request");
             for (SearchResults.Albums.Album data : searchResults.getALBUM().getData()) {
                 LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
                 item.setOnClickListener(l -> {
                     confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getALB_TITLE())
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
-                                api.addToQueue(data.getALB_ID(),"album",(response) -> {
-                                    Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                api.addToQueue(data.getALB_ID(), "album", new API.AddToQueueResponse() {
+                                    @Override
+                                    public void onSuccess(String networkResponse) {
+                                        Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(AddToQueueResults addToQueueResults) {
+                                        failureDialog.setMessage(addToQueueResults.getErrid()).create().show();
+                                    }
                                 });
                             })
                             .create()
                             .show();
                 });
                 ((TextView) item.findViewById(R.id.textview_title)).setText(data.getALB_TITLE());
-                ((TextView) item.findViewById(R.id.textview_artist)).setText(data.getALB_TITLE());
+                ((TextView) item.findViewById(R.id.textview_artist)).setText(data.getART_NAME());
                 Picasso.get().load(data.getALB_PICTURE()).into((ImageView) item.findViewById(R.id.imageview_cover));
                 albumLayout.addView(item);
             }
@@ -153,8 +188,15 @@ public class MainActivity extends AppCompatActivity {
                     confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME())
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
-                                api.addToQueue(data.getART_ID(),"artist",(response) -> {
-                                    Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                api.addToQueue(data.getART_ID(), "artist", new API.AddToQueueResponse() {
+                                    @Override
+                                    public void onSuccess(String networkResponse) {
+                                        Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(AddToQueueResults addToQueueResults) {
+                                        failureDialog.setMessage(addToQueueResults.getErrid()).create().show();                                    }
                                 });
                             })
                             .create()
@@ -172,8 +214,15 @@ public class MainActivity extends AppCompatActivity {
                     confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME())
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
-                                api.addToQueue(data.getSNG_ID(),"track",(response) -> {
-                                    Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                api.addToQueue(data.getSNG_ID(), "track", new API.AddToQueueResponse() {
+                                    @Override
+                                    public void onSuccess(String networkResponse) {
+                                        Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    @Override
+                                    public void onFailure(AddToQueueResults addToQueueResults) {
+                                        failureDialog.setMessage(addToQueueResults.getErrid()).create().show();                                    }
                                 });
                             })
                             .create()
@@ -184,6 +233,12 @@ public class MainActivity extends AppCompatActivity {
                 Picasso.get().load(data.getALB_PICTURE()).into((ImageView) item.findViewById(R.id.imageview_cover));
                 trackLayout.addView(item);
             }
+
+            /*
+
+            REALLY DIRTY WAY OF UPDATING TABLAYOUT
+
+             */
             TabLayout.Tab tab = tabLayout.getTabAt(tabLayout.getSelectedTabPosition());
             if(tabLayout.getSelectedTabPosition() == 0) {
                 tabLayout.selectTab(tabLayout.getTabAt(1));
