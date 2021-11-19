@@ -2,7 +2,6 @@ package com.hashmonopolist.andromix;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
-import com.android.volley.Header;
 import com.android.volley.Network;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -42,7 +41,7 @@ public class API {
         void onSuccess(NetworkResponse networkResponse);
     }
     public interface AddToQueueResponse {
-        void onSuccess(NetworkResponse networkResponse);
+        void onSuccess(String networkResponse);
     }
     public interface SearchResponse {
         void onSuccess(SearchResults searchResults);
@@ -60,18 +59,20 @@ public class API {
         requestQueue.add(stringRequest);
     }
 
-    public void addToQueue(String id, AddToQueueResponse addToQueueResponse) {
-//https://musicdl.stellarnet.xyz:8443/api/addToQueue?url=https%3A%2F%2Fwww.deezer.com%2Ftrack%2F1109731&bitrate=null
-//https://www.deezer.com/track/1109731&bitrate=null
-        String url = this.server+"/api/addToQueue?url=https://www.deezer.com/track/"+id;
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> System.out.println(response), System.out::println) {
+    public void addToQueue(String id,String type, AddToQueueResponse addToQueueResponse) {
+        String url = this.server+"/api/addToQueue?url=https://www.deezer.com/"+type+"/"+id;
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, response -> {
+            System.out.println(response);
+            addToQueueResponse.onSuccess(response);
+        }, System.out::println) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Cookie",cookie);
-                return super.getHeaders();
+                return headers;
             }
         };
+        requestQueue.add(stringRequest);
     }
     public void mainSearch(String term, SearchResponse searchResponse) {
         String url = this.server + "/api/mainSearch?term="+term;

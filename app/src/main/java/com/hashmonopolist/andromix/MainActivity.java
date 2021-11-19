@@ -1,7 +1,6 @@
 package com.hashmonopolist.andromix;
 
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -129,12 +128,19 @@ public class MainActivity extends AppCompatActivity {
             trackLayout = (LinearLayout) layoutInflater.inflate(R.layout.layout_page,null);
             AlertDialog.Builder confirmDownloadDialog = new AlertDialog.Builder(this)
                     .setTitle("Are you sure")
-                    .setPositiveButton("Yes", (dialog, which) -> Toast.makeText(MainActivity.this,"Downloading...",Toast.LENGTH_SHORT).show())
                     .setNegativeButton("No", (dialog, which) -> {});
             for (SearchResults.Albums.Album data : searchResults.getALBUM().getData()) {
                 LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
                 item.setOnClickListener(l -> {
-                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getALB_TITLE()).create().show();
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getALB_TITLE())
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                                api.addToQueue(data.getALB_ID(),"album",(response) -> {
+                                    Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                });
+                            })
+                            .create()
+                            .show();
                 });
                 ((TextView) item.findViewById(R.id.textview_title)).setText(data.getALB_TITLE());
                 ((TextView) item.findViewById(R.id.textview_artist)).setText(data.getALB_TITLE());
@@ -144,7 +150,15 @@ public class MainActivity extends AppCompatActivity {
             for (SearchResults.Artists.Artist data : searchResults.getARTIST().getData()) {
                 LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
                 item.setOnClickListener(l -> {
-                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME()).create().show();
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME())
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                                api.addToQueue(data.getART_ID(),"artist",(response) -> {
+                                    Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                });
+                            })
+                            .create()
+                            .show();
                 });
                 ((TextView) item.findViewById(R.id.textview_title)).setText(data.getART_NAME());
                 ((TextView) item.findViewById(R.id.textview_by)).setVisibility(View.GONE);
@@ -155,7 +169,15 @@ public class MainActivity extends AppCompatActivity {
             for (SearchResults.Tracks.Track data : searchResults.getTRACK().getData()) {
                 LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
                 item.setOnClickListener(l -> {
-                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getSNG_TITLE()).create().show();
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME())
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
+                                api.addToQueue(data.getSNG_ID(),"track",(response) -> {
+                                    Toast.makeText(MainActivity.this, "Download request sent!", Toast.LENGTH_SHORT).show();
+                                });
+                            })
+                            .create()
+                            .show();
                 });
                 ((TextView) item.findViewById(R.id.textview_title)).setText(data.getSNG_TITLE());
                 ((TextView) item.findViewById(R.id.textview_artist)).setText(data.getART_NAME());
