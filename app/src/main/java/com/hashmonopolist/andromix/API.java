@@ -48,7 +48,7 @@ public class API {
     }
     public void loginARL(String arl, LoginARLResponse loginARLResponse) {
         String url = server + "/api/login-arl?arl=" + arl;
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, System.out::println, System.out::println) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, null, System.out::println) {
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 cookie = response.headers.get("Set-Cookie");
