@@ -30,6 +30,10 @@ You may also be able to use KDE connect to send a file containing the ARL in whi
 
 Your ARL failed to authenticate with deezer. Set your ARL properly.
 
+### What does "TypeError" mean?
+
+I've only been able to get that error by requesting a song already in the queue. So it's most likely that.
+
 ### Will there be a way to view download queue?
 
 Unfortunately I am not experienced with websockets.  
