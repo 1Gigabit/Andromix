@@ -49,6 +49,16 @@ I personally use AirSonic & Substream (Android) to play music from the downloads
 I hope to add viewing a download queue whenever I get around to it.  
 I hope to make it so you can go from Artist -> Artist's Albums -> Album's tracks.
 
+## What do you put for "Server"?
+
+I don't know, that depends on your server URL. You need to run your own deemix server.
+Then you put in the URL for the deemix server. (With or without the trailing "/").
+An example server URL would be...
+
+"https://deemix.example.org"
+or
+"https://deemix.example.org/"
+
 ## What I don't like about this project
 
 I wanted to add side swiping but I could not figure out how to get it to work properly.
