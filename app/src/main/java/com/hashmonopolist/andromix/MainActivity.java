@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             for (SearchResults.Tracks.Track data : searchResults.getTRACK().getData()) {
                 LinearLayout item = (LinearLayout) layoutInflater.inflate(R.layout.layout_item, null);
                 item.setOnClickListener(l -> {
-                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getART_NAME())
+                    confirmDownloadDialog.setMessage("Are you sure you want to download " + data.getSNG_TITLE())
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 Toast.makeText(MainActivity.this, "Downloading...", Toast.LENGTH_SHORT).show();
                                 api.addToQueue(data.getSNG_ID(), "track", new API.AddToQueueResponse() {
