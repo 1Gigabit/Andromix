@@ -4,6 +4,9 @@
 
 A deemix client for Android devices.
 
+# Andromix is DEPRECATED! USE ANDROMIX2!!
+[https://1Gigabit/Andromix2](https://1Gigabit/Andromix2)
+
 ## Setting up for development
 
 Just import this repository. I used Android Studio to code this project.
